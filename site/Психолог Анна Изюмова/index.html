@@ -540,6 +540,154 @@
       color: var(--text-main);
     }
 
+    .reviews__cta {
+      margin-top: 48px;
+      text-align: center;
+    }
+
+    /* --- Review form modal --- */
+    .review-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .review-modal[hidden] {
+      display: none;
+    }
+
+    .review-modal__overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(37, 43, 46, 0.45);
+      backdrop-filter: blur(4px);
+    }
+
+    .review-modal__panel {
+      position: relative;
+      background: var(--white);
+      width: 100%;
+      max-width: 520px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 48px 44px;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15);
+    }
+
+    .review-modal__close {
+      position: absolute;
+      top: 14px;
+      right: 18px;
+      background: none;
+      border: none;
+      font-size: 28px;
+      line-height: 1;
+      color: var(--text-sec);
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+
+    .review-modal__close:hover {
+      color: var(--text-main);
+    }
+
+    .review-modal__title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
+      font-weight: 400;
+      line-height: 1.3;
+      margin: 0 0 28px;
+    }
+
+    .review-form__stars {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 24px;
+    }
+
+    .review-form__star {
+      background: none;
+      border: none;
+      padding: 0;
+      font-size: 32px;
+      line-height: 1;
+      color: rgba(37, 43, 46, 0.18);
+      cursor: pointer;
+      transition: color 0.2s ease, transform 0.2s ease;
+    }
+
+    .review-form__star:hover {
+      transform: scale(1.15);
+    }
+
+    .review-form__star--active {
+      color: var(--blue-deep);
+    }
+
+    .review-form__stars--missing .review-form__star {
+      color: rgba(190, 100, 100, 0.55);
+    }
+
+    .review-form__label {
+      display: block;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-sec);
+      margin-bottom: 8px;
+    }
+
+    .review-form__input,
+    .review-form__textarea {
+      width: 100%;
+      padding: 14px 16px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 15px;
+      font-weight: 300;
+      color: var(--text-main);
+      background: var(--bg-main);
+      border: 1px solid rgba(37, 43, 46, 0.1);
+      border-radius: 3px;
+      margin-bottom: 20px;
+      resize: vertical;
+    }
+
+    .review-form__input:focus,
+    .review-form__textarea:focus {
+      outline: none;
+      border-color: var(--blue-deep);
+    }
+
+    .review-form__textarea {
+      min-height: 130px;
+    }
+
+    .review-form__hint {
+      font-size: 13px;
+      color: var(--text-sec);
+      margin-top: 14px;
+    }
+
+    .review-form__done {
+      display: none;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-style: italic;
+      line-height: 1.5;
+    }
+
+    .review-modal--done .review-form__done {
+      display: block;
+    }
+
+    .review-modal--done .review-form {
+      display: none;
+    }
+
     .review-card__meta {
       font-size: 13px;
       color: var(--text-sec);
@@ -984,6 +1132,10 @@
         padding: 34px;
       }
 
+      .review-modal__panel {
+        padding: 40px 26px;
+      }
+
       .pricing__price {
         flex-direction: column;
         gap: 8px;
@@ -1303,6 +1455,9 @@
             </div>
           </article>
         </div>
+        <div class="reviews__cta reveal">
+          <button class="btn" type="button" id="addReviewBtn">Добавить отзыв</button>
+        </div>
       </div>
     </section>
 
@@ -1400,6 +1555,31 @@
     </div>
   </footer>
 
+  <div class="review-modal" id="reviewModal" role="dialog" aria-modal="true" aria-labelledby="reviewModalTitle" hidden>
+    <div class="review-modal__overlay" data-review-close></div>
+    <div class="review-modal__panel">
+      <button class="review-modal__close" type="button" aria-label="Закрыть" data-review-close>&times;</button>
+      <h3 class="review-modal__title" id="reviewModalTitle">Напишите свой отзыв о консультации с Анной Изюмовой</h3>
+      <form class="review-form" id="reviewForm" novalidate>
+        <span class="review-form__label">Ваша оценка</span>
+        <div class="review-form__stars" id="reviewStars" role="radiogroup" aria-label="Оценка от 1 до 5">
+          <button class="review-form__star" type="button" data-value="1" aria-label="1 звезда">★</button>
+          <button class="review-form__star" type="button" data-value="2" aria-label="2 звезды">★</button>
+          <button class="review-form__star" type="button" data-value="3" aria-label="3 звезды">★</button>
+          <button class="review-form__star" type="button" data-value="4" aria-label="4 звезды">★</button>
+          <button class="review-form__star" type="button" data-value="5" aria-label="5 звёзд">★</button>
+        </div>
+        <label class="review-form__label" for="reviewText">Ваш отзыв</label>
+        <textarea class="review-form__textarea" id="reviewText" name="text" required placeholder="Расскажите, как прошла консультация"></textarea>
+        <label class="review-form__label" for="reviewName">Ваше имя</label>
+        <input class="review-form__input" id="reviewName" name="name" type="text" required placeholder="Как к вам обращаться" />
+        <button class="btn" type="submit">Отправить отзыв</button>
+        <p class="review-form__hint">Текст отзыва скопируется автоматически и откроется Telegram — вставьте его в чат с Анной.</p>
+      </form>
+      <p class="review-form__done">Спасибо! Отзыв скопирован — осталось вставить его в открывшийся чат Telegram и отправить.</p>
+    </div>
+  </div>
+
   <script>
     // Sticky header blur on scroll
     const header = document.getElementById('header');
@@ -1476,6 +1656,82 @@
     } else {
       window.addEventListener('load', initReviewToggles);
     }
+
+    // Review form modal
+    const reviewModal = document.getElementById('reviewModal');
+    const addReviewBtn = document.getElementById('addReviewBtn');
+    const reviewForm = document.getElementById('reviewForm');
+    const reviewStars = document.getElementById('reviewStars');
+    let reviewRating = 0;
+
+    function setRating(value) {
+      reviewRating = value;
+      reviewStars.classList.remove('review-form__stars--missing');
+      reviewStars.querySelectorAll('.review-form__star').forEach(star => {
+        star.classList.toggle('review-form__star--active', Number(star.dataset.value) <= value);
+      });
+    }
+
+    reviewStars.querySelectorAll('.review-form__star').forEach(star => {
+      star.addEventListener('click', () => setRating(Number(star.dataset.value)));
+    });
+
+    function openReviewModal() {
+      reviewModal.hidden = false;
+      document.body.style.overflow = 'hidden';
+      reviewForm.reset();
+      setRating(0);
+      reviewModal.classList.remove('review-modal--done');
+      document.getElementById('reviewText').focus();
+    }
+
+    function closeReviewModal() {
+      reviewModal.hidden = true;
+      document.body.style.overflow = '';
+    }
+
+    addReviewBtn.addEventListener('click', openReviewModal);
+    reviewModal.querySelectorAll('[data-review-close]').forEach(el => {
+      el.addEventListener('click', closeReviewModal);
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && !reviewModal.hidden) closeReviewModal();
+    });
+
+    reviewForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const name = document.getElementById('reviewName').value.trim();
+      const text = document.getElementById('reviewText').value.trim();
+      if (reviewRating === 0) {
+        reviewStars.classList.add('review-form__stars--missing');
+        return;
+      }
+      if (!name || !text) {
+        if (!name) document.getElementById('reviewName').focus();
+        else document.getElementById('reviewText').focus();
+        return;
+      }
+      const composed = 'Отзыв о консультации с Анной Изюмовой\nОценка: ' +
+        '★'.repeat(reviewRating) + '☆'.repeat(5 - reviewRating) +
+        '\nИмя: ' + name + '\n\n' + text;
+      const openTelegram = () => {
+        window.open('https://t.me/anna_izumova', '_blank', 'noopener');
+        reviewModal.classList.add('review-modal--done');
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(composed).then(openTelegram, () => {
+          const tmp = document.createElement('textarea');
+          tmp.value = composed;
+          document.body.appendChild(tmp);
+          tmp.select();
+          document.execCommand('copy');
+          document.body.removeChild(tmp);
+          openTelegram();
+        });
+      } else {
+        openTelegram();
+      }
+    });
 
   </script>
 </body>
