@@ -1446,19 +1446,29 @@
 
     // Expandable review cards
     function initReviewToggles() {
+      const pairs = [];
       document.querySelectorAll('.review-card').forEach(card => {
         const text = card.querySelector('.review-card__text');
         const toggle = card.querySelector('.review-card__toggle');
         if (!text || !toggle) return;
-        if (text.scrollHeight <= text.clientHeight + 2) {
-          toggle.hidden = true;
-          return;
-        }
+        pairs.push({ text, toggle });
         toggle.addEventListener('click', () => {
           const expanded = text.classList.toggle('review-card__text--open');
           toggle.textContent = expanded ? 'Свернуть' : 'Читать далее';
           toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
         });
+      });
+      function syncToggles() {
+        pairs.forEach(({ text, toggle }) => {
+          const expanded = text.classList.contains('review-card__text--open');
+          toggle.hidden = !expanded && text.scrollHeight <= text.clientHeight + 2;
+        });
+      }
+      syncToggles();
+      let resizeTimer;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(syncToggles, 150);
       });
     }
     if (document.fonts && document.fonts.ready) {
